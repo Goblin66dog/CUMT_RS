@@ -18,6 +18,7 @@ class Dataset:
         self.max_y = self.geotrans[3]
         self.max_x = self.min_x + (self.im_width * self.geotrans[1])
         self.min_y = self.max_y + (self.im_height * self.geotrans[5])
+        # 读取图像栅格数据
         self.data_array = self.data.ReadAsArray(0, 0, self.im_width, self.im_height)
 
         # 图像维度/波段

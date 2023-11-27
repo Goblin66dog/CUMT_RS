@@ -1,4 +1,5 @@
 from osgeo import gdal
+from Dataset import Dataset
 import cv2
 import numpy as np
 
@@ -90,10 +91,11 @@ class Dataset:
 
         bandOut1.WriteArray(data1.data_array, xOffset1, yOffset1)
         bandOut2.WriteArray(data2.data_array, xOffset2, yOffset2)
+
         bandOut1.FlushCache()  # 刷新磁盘
         bandOut2.FlushCache()  # 刷新磁盘
 
-        stats = bandOut1.GetStatistics(0, 1)  # 第一个参数是1的话，是基于金字塔统计，第二个
+        stats = bandOut1.GetStatistics(0, 1)
         stats = bandOut2.GetStatistics(0, 1)
 
         # 第二个参数是1的话：整幅图像重度，不需要统计
