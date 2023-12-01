@@ -1,17 +1,29 @@
-import cv2
-from Dataset import Dataset
+from numba import jit
 import numpy as np
-from osgeo import gdal
+import time
 
-if __name__ == "__main__":
-    dataset1 = Dataset(r"D:\Pycharm_Project\0000000\Sigma0_VV.img")
-    save_path = "mosiac.tif"
-    driver = gdal.GetDriverByName("GTiff")
-    data = driver.Create(save_path, dataset1.im_width, dataset1.im_height, dataset1.im_bands, dataset1.datatype)
-    data.SetGeoTransform(dataset1.geotrans)
-    data.SetProjection(dataset1.proj)
+x = np.arange(100).reshape(10, 10)
 
-    for cols in dataset1.data_array:
+@jit(nopython=True)
+def go_fast(a): # Function is compiled and runs in machine code
+    trace = 0.0
+    for i in range(a.shape[0]):
+        trace += np.tanh(a[i, i])
+    return a + trace
 
-        data.GetRasterBand(1).WriteArray(cols)
-    del data
+# DO NOT REPORT THIS... COMPILATION TIME IS INCLUDED IN THE EXECUTION TIME!
+start = time.perf_counter()
+go_fast(x)
+end = time.perf_counter()
+print("Elapsed (with compilation) = {}s".format((end - start)))
+
+# NOW THE FUNCTION IS COMPILED, RE-TIME IT EXECUTING FROM CACHE
+start = time.perf_counter()
+go_fast(x)
+end = time.perf_counter()
+print("Elapsed (after compilation) = {}s".format((end - start)))
+
+
+
+
+
